@@ -29,34 +29,35 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZXV0bnNhdmJpdmdhYnVvcHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0OTA1ODUsImV4cCI6MjA0NDA2NjU4NX0.uZapd8EMNNl-oK2jx608718U-5XfhBJOrh7kO9AZkHI'; // Replace with your Supabase anon/public key
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Handle login form submission
-    document.getElementById('login-form').addEventListener('submit', async function(event) {
-      event.preventDefault(); // Prevent page reload
-      
-      // Get the email and password from the form
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+async function signUpUser(email, username, password) {
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+  });
 
-      // Perform login request
-      const { data, error } = await supabase.auth.signInWithPassword({
+  if (error) {
+    console.error('Error creating user:', error.message);
+    return;
+  }
+
+  // Insert user data into the users table
+  const { data: userData, error: userInsertError } = await supabase
+    .from('users')
+    .insert([
+      {
+        username: username,
         email: email,
-        password: password
-      });
-
-      const loginMessage = document.getElementById('login-message');
-
-      if (error) {
-        loginMessage.textContent = `Error: ${error.message}`;
-        loginMessage.style.color = 'red';
-      } else {
-        loginMessage.textContent = 'Login successful! Redirecting...';
-        loginMessage.style.color = 'green';
-
-        // You can redirect or perform any other actions after login success
-        setTimeout(() => {
-          window.location.href = 'index.html'; // Redirect to dashboard or home page
-        }, 2000);
+        password: password, // Hash the password before storing it
+        created_at: new Date(),
       }
+    ]);
+
+  if (userInsertError) {
+    console.error('Error inserting user into users table:', userInsertError.message);
+  } else {
+    console.log('User data inserted successfully:', userData);
+  }
+}
     });
   </script>
 </body>
