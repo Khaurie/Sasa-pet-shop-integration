@@ -11,6 +11,7 @@
   <meta name="author" content="">
   <meta name="keywords" content="">
   <meta name="description" content="">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 
@@ -1707,6 +1708,26 @@
       </div>
     </div>
   </div>
+    <script>
+    // Supabase setup
+    const supabaseUrl = 'https://toeutnsavbivgabuoppi.supabase.co'; // Replace with your Supabase project URL
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZXV0bnNhdmJpdmdhYnVvcHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0OTA1ODUsImV4cCI6MjA0NDA2NjU4NX0.uZapd8EMNNl-oK2jx608718U-5XfhBJOrh7kO9AZkHI'; // Replace with your Supabase anon/public key
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Example function to get data
+    async function getData() {
+      const { data, error } = await supabase
+        .from('your_table_name') // Replace with your table name
+        .select('*');
+      
+      if (error) {
+        console.error(error);
+      } else {
+        console.log(data); // Use this to display data in the console
+        alert(JSON.stringify(data)); // Or show the data in an alert
+      }
+    }
+  </script>
 
 
   <script src="js/jquery-1.11.0.min.js"></script>
